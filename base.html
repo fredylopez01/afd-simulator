@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulador de Autómatas Finitos Deterministas</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .tabs {
+        display: flex;
+        margin-bottom: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 5px;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 15px 20px;
+        text-align: center;
+        background: none;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .tab.active {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+      }
+
+      input:focus,
+      textarea:focus,
+      select:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      button {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin: 5px;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .transition-input {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .transition-input input {
+        flex: 1;
+      }
+
+      .transition-list {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 15px;
+        margin-top: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .transition-item {
+        background: white;
+        padding: 10px;
+        margin-bottom: 5px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .result {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      .result.accepted {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        border-left: 5px solid #28a745;
+      }
+
+      .result.rejected {
+        background: linear-gradient(135deg, #f8d7da, #f1b0b7);
+        border-left: 5px solid #dc3545;
+      }
+
+      .step {
+        background: white;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .generated-strings {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .string-item {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .file-operations {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .current-automaton {
+        background: #e3f2fd;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        border-left: 5px solid #2196f3;
+      }
+
+      .error {
+        background: #ffebee;
+        color: #c62828;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+        border-left: 4px solid #f44336;
+      }
+
+      .success {
+        background: #e8f5e8;
+        color: #2e7d32;
+        padding: 10px;
+        border-radius: 6px;
+        margin-top: 10px;
+        border-left: 4px solid #4caf50;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 10px;
+          padding: 20px;
+        }
+
+        h1 {
+          font-size: 2em;
+        }
+
+        .tabs {
+          flex-direction: column;
+        }
+
+        .transition-input {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🤖 Simulador de AFD</h1>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('create')">
+          Crear AFD
+        </button>
+        <button class="tab" onclick="switchTab('evaluate')">
+          Evaluar Cadenas
+        </button>
+        <button class="tab" onclick="switchTab('generate')">
+          Generar Cadenas
+        </button>
+        <button class="tab" onclick="switchTab('files')">Archivos</button>
+      </div>
+
+      <!-- Tab: Crear AFD -->
+      <div id="create-tab" class="tab-content active">
+        <h2>Definir Autómata Finito Determinista</h2>
+
+        <div class="form-group">
+          <label for="states">Estados (separados por comas)</label>
+          <input type="text" id="states" placeholder="q0, q1, q2, q3" />
+        </div>
+
+        <div class="form-group">
+          <label for="alphabet">Alfabeto (símbolos separados por comas)</label>
+          <input type="text" id="alphabet" placeholder="0, 1" />
+        </div>
+
+        <div class="form-group">
+          <label for="initial-state">Estado Inicial</label>
+          <select id="initial-state">
+            <option value="">Seleccionar estado inicial</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="final-states"
+            >Estados de Aceptación (separados por comas)</label
+          >
+          <input type="text" id="final-states" placeholder="q2, q3" />
+        </div>
+
+        <div class="form-group">
+          <label>Función de Transición</label>
+          <div class="transition-input">
+            <select id="from-state">
+              <option value="">Estado origen</option>
+            </select>
+            <select id="symbol">
+              <option value="">Símbolo</option>
+            </select>
+            <select id="to-state">
+              <option value="">Estado destino</option>
+            </select>
+            <button type="button" onclick="addTransition()">Agregar</button>
+          </div>
+          <div id="transitions-list" class="transition-list"></div>
+        </div>
+
+        <button onclick="createAutomaton()">Crear AFD</button>
+        <div id="create-result"></div>
+      </div>
+
+      <!-- Tab: Evaluar Cadenas -->
+      <div id="evaluate-tab" class="tab-content">
+        <div id="current-automaton-info"></div>
+
+        <div class="form-group">
+          <label for="input-string">Cadena a evaluar</label>
+          <input
+            type="text"
+            id="input-string"
+            placeholder="Ingrese la cadena"
+          />
+        </div>
+
+        <button onclick="evaluateString()">Evaluar Cadena</button>
+        <div id="evaluation-result"></div>
+      </div>
+
+      <!-- Tab: Generar Cadenas -->
+      <div id="generate-tab" class="tab-content">
+        <div id="current-automaton-info-2"></div>
+
+        <button onclick="generateStrings()">Generar Primeras 10 Cadenas</button>
+        <div id="generation-result"></div>
+      </div>
+
+      <!-- Tab: Archivos -->
+      <div id="files-tab" class="tab-content">
+        <h2>Gestión de Archivos</h2>
+
+        <div class="file-operations">
+          <button onclick="saveAutomaton()">Guardar AFD</button>
+          <button onclick="document.getElementById('file-input').click()">
+            Cargar AFD
+          </button>
+          <input
+            type="file"
+            id="file-input"
+            accept=".json"
+            style="display: none"
+            onchange="loadAutomaton(event)"
+          />
+        </div>
+
+        <div id="file-result"></div>
+      </div>
+    </div>
+
+    <script>
+      // Variables globales
+      let currentAutomaton = null;
+      let transitions = [];
+
+      // Clase para representar un AFD
+      class AFD {
+        constructor(states, alphabet, initialState, finalStates, transitions) {
+          this.states = states;
+          this.alphabet = alphabet;
+          this.initialState = initialState;
+          this.finalStates = finalStates;
+          this.transitions = transitions;
+          this.transitionFunction = this.buildTransitionFunction(transitions);
+        }
+
+        buildTransitionFunction(transitions) {
+          const func = {};
+          transitions.forEach((t) => {
+            if (!func[t.from]) func[t.from] = {};
+            func[t.from][t.symbol] = t.to;
+          });
+          return func;
+        }
+
+        evaluate(string) {
+          const steps = [];
+          let currentState = this.initialState;
+
+          steps.push({
+            step: 0,
+            state: currentState,
+            symbol: "",
+            message: `Estado inicial: ${currentState}`,
+          });
+
+          for (let i = 0; i < string.length; i++) {
+            const symbol = string[i];
+
+            if (!this.alphabet.includes(symbol)) {
+              return {
+                accepted: false,
+                steps,
+                error: `El símbolo '${symbol}' no pertenece al alfabeto`,
+              };
+            }
+
+            const nextState =
+              this.transitionFunction[currentState] &&
+              this.transitionFunction[currentState][symbol];
+
+            if (!nextState) {
+              steps.push({
+                step: i + 1,
+                state: currentState,
+                symbol: symbol,
+                message: `No existe transición desde ${currentState} con símbolo '${symbol}'`,
+              });
+              return {
+                accepted: false,
+                steps,
+                error: `No existe transición desde ${currentState} con símbolo '${symbol}'`,
+              };
+            }
+
+            steps.push({
+              step: i + 1,
+              state: currentState,
+              symbol: symbol,
+              nextState: nextState,
+              message: `Desde el estado (${currentState}) con el símbolo '${symbol}' se transita al estado (${nextState})`,
+            });
+
+            currentState = nextState;
+          }
+
+          const accepted = this.finalStates.includes(currentState);
+          steps.push({
+            step: string.length + 1,
+            state: currentState,
+            symbol: "",
+            message: `Proceso finalizado. El estado final es (${currentState})`,
+          });
+
+          return {
+            accepted,
+            steps,
+            finalState: currentState,
+          };
+        }
+
+        generateStrings(limit = 10) {
+          const validStrings = [];
+          const queue = [{ string: "", state: this.initialState }];
+          const visited = new Set();
+          let maxLength = 0;
+
+          while (
+            validStrings.length < limit &&
+            queue.length > 0 &&
+            maxLength <= 20
+          ) {
+            const current = queue.shift();
+            const key = `${current.string}-${current.state}`;
+
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            if (this.finalStates.includes(current.state)) {
+              validStrings.push(current.string);
+            }
+
+            if (current.string.length <= maxLength + 1) {
+              this.alphabet.forEach((symbol) => {
+                const nextState =
+                  this.transitionFunction[current.state] &&
+                  this.transitionFunction[current.state][symbol];
+                if (nextState) {
+                  queue.push({
+                    string: current.string + symbol,
+                    state: nextState,
+                  });
+                }
+              });
+            }
+
+            if (queue.length === 0 && validStrings.length < limit) {
+              maxLength++;
+              queue.push({ string: "", state: this.initialState });
+              visited.clear();
+            }
+          }
+
+          // Ordenar por longitud y luego lexicográficamente
+          return validStrings
+            .slice(0, limit)
+            .sort((a, b) => a.length - b.length || a.localeCompare(b));
+        }
+      }
+
+      // Funciones de interfaz
+      function switchTab(tabName) {
+        // Ocultar todas las pestañas
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Mostrar la pestaña seleccionada
+        document.getElementById(tabName + "-tab").classList.add("active");
+        event.target.classList.add("active");
+
+        // Actualizar información del autómata actual
+        updateCurrentAutomatonInfo();
+      }
+
+      function updateCurrentAutomatonInfo() {
+        const info1 = document.getElementById("current-automaton-info");
+        const info2 = document.getElementById("current-automaton-info-2");
+
+        if (currentAutomaton) {
+          const infoHtml = `
+                    <div class="current-automaton">
+                        <h3>AFD Actual</h3>
+                        <p><strong>Estados:</strong> {${currentAutomaton.states.join(
+                          ", "
+                        )}}</p>
+                        <p><strong>Alfabeto:</strong> {${currentAutomaton.alphabet.join(
+                          ", "
+                        )}}</p>
+                        <p><strong>Estado Inicial:</strong> ${
+                          currentAutomaton.initialState
+                        }</p>
+                        <p><strong>Estados de Aceptación:</strong> {${currentAutomaton.finalStates.join(
+                          ", "
+                        )}}</p>
+                        <p><strong>Transiciones:</strong> ${
+                          transitions.length
+                        }</p>
+                    </div>
+                `;
+          if (info1) info1.innerHTML = infoHtml;
+          if (info2) info2.innerHTML = infoHtml;
+        } else {
+          const noAfd =
+            '<div class="error">No hay ningún AFD definido. Ve a la pestaña "Crear AFD" para definir uno.</div>';
+          if (info1) info1.innerHTML = noAfd;
+          if (info2) info2.innerHTML = noAfd;
+        }
+      }
+
+      function updateStateSelectors() {
+        const states = document
+          .getElementById("states")
+          .value.split(",")
+          .map((s) => s.trim())
+          .filter((s) => s);
+        const selectors = ["initial-state", "from-state", "to-state"];
+
+        selectors.forEach((selectorId) => {
+          const selector = document.getElementById(selectorId);
+          selector.innerHTML = '<option value="">Seleccionar estado</option>';
+          states.forEach((state) => {
+            selector.innerHTML += `<option value="${state}">${state}</option>`;
+          });
+        });
+      }
+
+      function updateSymbolSelector() {
+        const alphabet = document
+          .getElementById("alphabet")
+          .value.split(",")
+          .map((s) => s.trim())
+          .filter((s) => s);
+        const selector = document.getElementById("symbol");
+        selector.innerHTML = '<option value="">Seleccionar símbolo</option>';
+        alphabet.forEach((symbol) => {
+          selector.innerHTML += `<option value="${symbol}">${symbol}</option>`;
+        });
+      }
+
+      function addTransition() {
+        const fromState = document.getElementById("from-state").value;
+        const symbol = document.getElementById("symbol").value;
+        const toState = document.getElementById("to-state").value;
+
+        if (!fromState || !symbol || !toState) {
+          showResult(
+            "create-result",
+            "Todos los campos de la transición son obligatorios",
+            "error"
+          );
+          return;
+        }
+
+        // Verificar si la transición ya existe
+        const existingTransition = transitions.find(
+          (t) => t.from === fromState && t.symbol === symbol
+        );
+
+        if (existingTransition) {
+          showResult(
+            "create-result",
+            `Ya existe una transición desde ${fromState} con símbolo '${symbol}'`,
+            "error"
+          );
+          return;
+        }
+
+        transitions.push({ from: fromState, symbol: symbol, to: toState });
+        updateTransitionsList();
+
+        // Limpiar selectores
+        document.getElementById("from-state").value = "";
+        document.getElementById("symbol").value = "";
+        document.getElementById("to-state").value = "";
+      }
+
+      function removeTransition(index) {
+        transitions.splice(index, 1);
+        updateTransitionsList();
+      }
+
+      function updateTransitionsList() {
+        const list = document.getElementById("transitions-list");
+        list.innerHTML = "";
+
+        transitions.forEach((transition, index) => {
+          const item = document.createElement("div");
+          item.className = "transition-item";
+          item.innerHTML = `
+                    <span>δ(${transition.from}, ${transition.symbol}) = ${transition.to}</span>
+                    <button onclick="removeTransition(${index})" style="background: #dc3545; padding: 5px 10px; font-size: 12px;">Eliminar</button>
+                `;
+          list.appendChild(item);
+        });
+      }
+
+      function createAutomaton() {
+        try {
+          const states = document
+            .getElementById("states")
+            .value.split(",")
+            .map((s) => s.trim())
+            .filter((s) => s);
+          const alphabet = document
+            .getElementById("alphabet")
+            .value.split(",")
+            .map((s) => s.trim())
+            .filter((s) => s);
+          const initialState = document.getElementById("initial-state").value;
+          const finalStates = document
+            .getElementById("final-states")
+            .value.split(",")
+            .map((s) => s.trim())
+            .filter((s) => s);
+
+          // Validaciones
+          if (states.length === 0)
+            throw new Error("Debe definir al menos un estado");
+          if (alphabet.length === 0)
+            throw new Error("Debe definir al menos un símbolo en el alfabeto");
+          if (!initialState)
+            throw new Error("Debe seleccionar un estado inicial");
+          if (finalStates.length === 0)
+            throw new Error("Debe definir al menos un estado de aceptación");
+          if (transitions.length === 0)
+            throw new Error("Debe definir al menos una transición");
+
+          // Verificar que todos los estados de aceptación existan
+          finalStates.forEach((state) => {
+            if (!states.includes(state)) {
+              throw new Error(
+                `El estado de aceptación '${state}' no está en el conjunto de estados`
+              );
+            }
+          });
+
+          // Verificar que todas las transiciones usen estados y símbolos válidos
+          transitions.forEach((t) => {
+            if (!states.includes(t.from))
+              throw new Error(`Estado origen '${t.from}' no válido`);
+            if (!states.includes(t.to))
+              throw new Error(`Estado destino '${t.to}' no válido`);
+            if (!alphabet.includes(t.symbol))
+              throw new Error(`Símbolo '${t.symbol}' no válido`);
+          });
+
+          currentAutomaton = new AFD(
+            states,
+            alphabet,
+            initialState,
+            finalStates,
+            transitions
+          );
+          showResult("create-result", "AFD creado exitosamente", "success");
+          updateCurrentAutomatonInfo();
+        } catch (error) {
+          showResult("create-result", error.message, "error");
+        }
+      }
+
+      function evaluateString() {
+        if (!currentAutomaton) {
+          showResult(
+            "evaluation-result",
+            "No hay ningún AFD definido",
+            "error"
+          );
+          return;
+        }
+
+        const inputString = document.getElementById("input-string").value;
+        const result = currentAutomaton.evaluate(inputString);
+
+        let html = `<div class="result ${
+          result.accepted ? "accepted" : "rejected"
+        }">`;
+        html += `<h3>Evaluando la cadena: "${inputString}"</h3>`;
+
+        result.steps.forEach((step) => {
+          html += `<div class="step">${step.step}. ${step.message}</div>`;
+        });
+
+        html += `<div class="step"><strong>Resultado: La cadena "${inputString}" es ${
+          result.accepted ? "ACEPTADA" : "RECHAZADA"
+        }</strong></div>`;
+
+        if (result.error) {
+          html += `<div class="error">Error: ${result.error}</div>`;
+        }
+
+        html += "</div>";
+        document.getElementById("evaluation-result").innerHTML = html;
+      }
+
+      function generateStrings() {
+        if (!currentAutomaton) {
+          showResult(
+            "generation-result",
+            "No hay ningún AFD definido",
+            "error"
+          );
+          return;
+        }
+
+        const strings = currentAutomaton.generateStrings(10);
+
+        let html =
+          '<div class="result"><h3>Primeras 10 cadenas del lenguaje:</h3>';
+
+        if (strings.length === 0) {
+          html +=
+            "<p>El lenguaje está vacío o no se pudieron generar cadenas.</p>";
+        } else {
+          html += '<div class="generated-strings">';
+          strings.forEach((string, index) => {
+            const displayString = string === "" ? "ε (cadena vacía)" : string;
+            html += `<div class="string-item">${
+              index + 1
+            }. "${displayString}"</div>`;
+          });
+          html += "</div>";
+        }
+
+        html += "</div>";
+        document.getElementById("generation-result").innerHTML = html;
+      }
+
+      function saveAutomaton() {
+        if (!currentAutomaton) {
+          showResult(
+            "file-result",
+            "No hay ningún AFD definido para guardar",
+            "error"
+          );
+          return;
+        }
+
+        const automatonData = {
+          states: currentAutomaton.states,
+          alphabet: currentAutomaton.alphabet,
+          initialState: currentAutomaton.initialState,
+          finalStates: currentAutomaton.finalStates,
+          transitions: transitions,
+        };
+
+        const dataStr = JSON.stringify(automatonData, null, 2);
+        const dataUri =
+          "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+        const exportFileDefaultName = "automaton.json";
+
+        const linkElement = document.createElement("a");
+        linkElement.setAttribute("href", dataUri);
+        linkElement.setAttribute("download", exportFileDefaultName);
+        linkElement.click();
+
+        showResult("file-result", "AFD guardado exitosamente", "success");
+      }
+
+      function loadAutomaton(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const automatonData = JSON.parse(e.target.result);
+
+            // Validar estructura del archivo
+            if (
+              !automatonData.states ||
+              !automatonData.alphabet ||
+              !automatonData.initialState ||
+              !automatonData.finalStates ||
+              !automatonData.transitions
+            ) {
+              throw new Error(
+                "Archivo de AFD inválido: faltan propiedades requeridas"
+              );
+            }
+
+            // Cargar datos en la interfaz
+            document.getElementById("states").value =
+              automatonData.states.join(", ");
+            document.getElementById("alphabet").value =
+              automatonData.alphabet.join(", ");
+            document.getElementById("final-states").value =
+              automatonData.finalStates.join(", ");
+
+            transitions = automatonData.transitions;
+
+            // Actualizar selectores
+            updateStateSelectors();
+            updateSymbolSelector();
+
+            // Seleccionar estado inicial
+            document.getElementById("initial-state").value =
+              automatonData.initialState;
+
+            // Actualizar lista de transiciones
+            updateTransitionsList();
+
+            // Crear el autómata
+            currentAutomaton = new AFD(
+              automatonData.states,
+              automatonData.alphabet,
+              automatonData.initialState,
+              automatonData.finalStates,
+              automatonData.transitions
+            );
+
+            showResult("file-result", "AFD cargado exitosamente", "success");
+            updateCurrentAutomatonInfo();
+          } catch (error) {
+            showResult(
+              "file-result",
+              `Error al cargar el archivo: ${error.message}`,
+              "error"
+            );
+          }
+        };
+        reader.readAsText(file);
+      }
+
+      function showResult(elementId, message, type) {
+        const element = document.getElementById(elementId);
+        element.innerHTML = `<div class="${type}">${message}</div>`;
+      }
+
+      // Event listeners
+      document
+        .getElementById("states")
+        .addEventListener("input", updateStateSelectors);
+      document
+        .getElementById("alphabet")
+        .addEventListener("input", updateSymbolSelector);
+
+      // Inicialización
+      updateCurrentAutomatonInfo();
+    </script>
+  </body>
+</html>
