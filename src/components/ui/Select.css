@@ -1,0 +1,73 @@
+/* components/ui/Select.css */
+
+.select-group {
+  margin-bottom: 0px;
+}
+
+.select-label {
+  display: block;
+  /* margin-bottom: 8px; */
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  background-color: white;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.select--error {
+  border-color: #dc3545;
+}
+
+.select--error:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.select--disabled {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6c757d;
+  transition: transform 0.2s ease;
+}
+
+.select:focus + .select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.select-error {
+  display: block;
+  color: #dc3545;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
