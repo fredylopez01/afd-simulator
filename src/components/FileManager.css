@@ -1,0 +1,181 @@
+/* components/FileManager.css */
+
+.file-manager {
+  display: flex;
+  gap: 20px;
+  justify-content: space-evenly;
+}
+
+.file-manager__content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.file-manager__description {
+  text-align: center;
+  color: #6c757d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.file-manager__description p {
+  margin: 0;
+}
+
+.file-manager__actions {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  justify-content: center;
+}
+
+.file-manager__save,
+.file-manager__load {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 200px;
+}
+
+.file-manager__save-btn,
+.file-manager__load-btn {
+  width: 100%;
+}
+
+.file-manager__help-text {
+  margin: 0;
+  font-size: 12px;
+  color: #6c757d;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.file-manager__divider {
+  display: flex;
+  align-items: center;
+  color: #adb5bd;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.file-manager__divider span {
+  background: white;
+  padding: 0 16px;
+  position: relative;
+}
+
+.file-manager__divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -50px;
+  right: -50px;
+  height: 1px;
+  background: #e1e5e9;
+  z-index: -1;
+}
+
+.file-manager__result {
+  margin-top: 20px;
+  animation: slideIn 0.3s ease-out;
+}
+
+.file-manager__result-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.file-manager__result-message {
+  flex: 1;
+  font-weight: 500;
+}
+
+.file-manager__close-btn {
+  flex-shrink: 0;
+}
+
+.file-manager__info {
+  margin-top: 32px;
+}
+
+.file-manager__format-info h4 {
+  margin: 0 0 12px 0;
+  color: #0c5460;
+  font-size: 16px;
+}
+
+.file-manager__format-info p {
+  margin: 0 0 16px 0;
+  color: #6c757d;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.file-manager__json-example {
+  background: #f8f9fa;
+  border: 1px solid #e1e5e9;
+  border-radius: 6px;
+  padding: 16px;
+  font-family: "Courier New", monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #495057;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .file-manager__actions {
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .file-manager__save,
+  .file-manager__load {
+    max-width: none;
+    width: 100%;
+  }
+
+  .file-manager__divider {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .file-manager__divider::before {
+    left: 20%;
+    right: 20%;
+  }
+
+  .file-manager__result-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .file-manager__close-btn {
+    align-self: flex-end;
+  }
+
+  .file-manager__json-example {
+    font-size: 11px;
+    padding: 12px;
+  }
+}
