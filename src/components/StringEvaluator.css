@@ -1,0 +1,36 @@
+/* components/StringEvaluator.css */
+
+.string-evaluator {
+  /* height: 90dvh; */
+  display: flex;
+  gap: 20px;
+  justify-content: space-evenly;
+}
+
+.string-evaluator__form {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.string-evaluator__actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding-top: 16px;
+  border-top: 1px solid #e1e5e9;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .string-evaluator__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .string-evaluator__actions .btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}
