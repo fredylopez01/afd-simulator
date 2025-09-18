@@ -1,0 +1,66 @@
+/* components/AFDCreator.css */
+
+.afd-creator {
+  margin: 0 auto;
+}
+
+.afd-creator__form {
+  display: flex;
+  gap: 20px;
+}
+
+.afd-creator__transition-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.afd-creator__section-title {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.afd-creator__transition-form {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: space-evenly;
+  gap: 12px;
+}
+
+.afd-creator__actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #e1e5e9;
+  margin-top: 20px;
+}
+
+.afd-creator__clear-btn {
+  align-self: flex-start;
+}
+
+.afd-creator__result {
+  margin-top: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .afd-creator__transition-form {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .afd-creator__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .afd-creator {
+    margin: 0;
+  }
+}
