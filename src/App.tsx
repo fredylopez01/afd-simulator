@@ -1,35 +1,86 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// App.tsx
 
-function App() {
-  const [count, setCount] = useState(0)
+import React, { useState } from "react";
+import { TabNavigation } from "./components/TabNavigation";
+import { AFDInfo } from "./components/AFDInfo";
+import { AFDCreator } from "./components/AFDCreator";
+import { StringEvaluator } from "./components/StringEvaluator";
+import { StringGenerator } from "./components/StringGenerator";
+import { FileManager } from "./components/FileManager";
+import { useAFD } from "./hooks/useAFD";
+import { TabType } from "./types/Index";
+import "./App.css";
+
+const App: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TabType>("create");
+  const {
+    currentAFD,
+    transitions,
+    isCreated,
+    createAFD,
+    addTransition,
+    removeTransition,
+    clearTransitions,
+    evaluateString,
+    generateStrings,
+    saveAFD,
+    loadAFD,
+  } = useAFD();
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "create":
+        return (
+          <AFDCreator
+            transitions={transitions}
+            onCreateAFD={createAFD}
+            onAddTransition={addTransition}
+            onRemoveTransition={removeTransition}
+            onClearTransitions={clearTransitions}
+          />
+        );
+
+      case "evaluate":
+        return <StringEvaluator onEvaluateString={evaluateString} />;
+
+      case "generate":
+        return (
+          <>
+            <StringGenerator onGenerateStrings={generateStrings} />
+          </>
+        );
+
+      case "files":
+        return (
+          <FileManager
+            onSaveAFD={saveAFD}
+            onLoadAFD={loadAFD}
+            hasAFD={isCreated}
+          />
+        );
+
+      case "afd":
+        return (
+          <AFDInfo afd={currentAFD} transitionsCount={transitions.length} />
+        );
+
+      default:
+        return null;
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div className="app__container">
+      <main className="app__main">
+        <TabNavigation
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          className="app__tabs"
+        />
+        <div className="app__content">{renderTabContent()}</div>
+      </main>
+    </div>
+  );
+};
 
-export default App
+export default App;

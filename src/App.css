@@ -1,42 +1,200 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+/* App.css */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  min-height: 100vh;
+  color: #333;
+  line-height: 1.6;
+}
+
+.app__container {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 90vh;
+}
+
+.app__title {
+  font-size: 1.3rem;
+  margin-bottom: 5px;
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.app__icon {
+  font-size: 2rem;
+}
+
+.app__main {
+  flex: 1;
+  /* padding: 30px; */
+  display: flex;
+  flex-direction: column;
+}
+
+.app__content {
+  flex: 1;
+  animation: fadeIn 0.3s ease-in-out;
+  padding: 20px;
+}
+
+.app__footer {
   text-align: center;
+  padding: 20px 30px;
+  background: #f8f9fa;
+  border-top: 1px solid #e1e5e9;
+  color: #6c757d;
+  font-size: 14px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app__footer p {
+  margin: 0;
 }
 
-@keyframes logo-spin {
+.app__footer strong {
+  color: #495057;
+}
+
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-    transform: rotate(360deg);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .app__container {
+    max-width: 95%;
   }
 }
 
-.card {
-  padding: 2em;
+@media (max-width: 768px) {
+  .app {
+    padding: 10px;
+    align-items: flex-start;
+  }
+
+  .app__container {
+    min-height: 100vh;
+    border-radius: 10px;
+    margin-top: 0;
+  }
+
+  .app__title {
+    font-size: 1rem;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .app__icon {
+    font-size: 2.5rem;
+  }
+
+  .app__main {
+    padding: 20px;
+  }
+
+  .app__footer {
+    padding: 16px 20px;
+    font-size: 13px;
+  }
 }
 
-.read-the-docs {
-  color: #888;
+@media (max-width: 480px) {
+  .app {
+    padding: 5px;
+  }
+
+  .app__container {
+    border-radius: 5px;
+  }
+
+  .app__title {
+    font-size: 1.8rem;
+  }
+
+  .app__icon {
+    font-size: 2rem;
+  }
+
+  .app__main {
+    padding: 15px;
+  }
+
+  .app__footer {
+    padding: 12px 15px;
+    font-size: 12px;
+  }
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Estilos para elementos enfocados */
+*:focus {
+  outline: none;
+}
+
+/* Transiciones globales */
+* {
+  transition: all 0.2s ease;
+}
+
+button,
+input,
+select,
+textarea {
+  transition: all 0.3s ease;
+}
+
+/* Utilidades */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
