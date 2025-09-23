@@ -1,0 +1,86 @@
+/* components/AFDInfo.css */
+
+.afd-info {
+  margin-bottom: 24px;
+}
+
+.afd-info__empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.afd-info__icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.afd-info__message {
+  margin: 0;
+  color: #721c24;
+  font-weight: 500;
+}
+
+.afd-info__content {
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  gap: 10px;
+}
+
+.afd-info__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.afd-info__row:last-child {
+  border-bottom: none;
+}
+
+.afd-info__label {
+  font-weight: 600;
+  color: #0c5460;
+  font-size: 14px;
+}
+
+.afd-info__value {
+  font-family: "Courier New", monospace;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #333;
+}
+
+.afd-info__value--highlight {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  font-weight: 600;
+}
+
+.afd-info__value--count {
+  background: #28a745;
+  color: white;
+  font-weight: 600;
+  min-width: 24px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .afd-info__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .afd-info__value {
+    width: 100%;
+    text-align: left;
+  }
+}
