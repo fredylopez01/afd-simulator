@@ -45,28 +45,32 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
   const createAFD = useCallback(
     (definition: AFDDefinition): { success: boolean; error?: string } => {
       try {
-        // Validaciones
+        // Validar que se hayan definido estados
         if (definition.states.length === 0) {
           return { success: false, error: "Debe definir al menos un estado" };
         }
+        // Validar que se haya definido un alfabeto
         if (definition.alphabet.length === 0) {
           return {
             success: false,
             error: "Debe definir al menos un símbolo en el alfabeto",
           };
         }
+        // Validar que se haya seleccionado un estado inicial
         if (!definition.initialState) {
           return {
             success: false,
             error: "Debe seleccionar un estado inicial",
           };
         }
+        // Validar que existan estados de aceptación
         if (definition.finalStates.length === 0) {
           return {
             success: false,
             error: "Debe definir al menos un estado de aceptación",
           };
         }
+        // Validar que existan transiciones
         if (definition.transitions.length === 0) {
           return {
             success: false,
@@ -74,7 +78,7 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
           };
         }
 
-        // Verificar que todos los estados de aceptación existan
+        // Verificar que todos los estados de aceptación existan en el conjunto de estados
         for (const state of definition.finalStates) {
           if (!definition.states.includes(state)) {
             return {
@@ -86,23 +90,27 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
 
         // Verificar que todas las transiciones usen estados y símbolos válidos
         for (const t of definition.transitions) {
+          // Validar estado origen
           if (!definition.states.includes(t.from)) {
             return {
               success: false,
               error: `Estado origen '${t.from}' no válido`,
             };
           }
+          // Validar estado destino
           if (!definition.states.includes(t.to)) {
             return {
               success: false,
               error: `Estado destino '${t.to}' no válido`,
             };
           }
+          // Validar símbolo de transición
           if (!definition.alphabet.includes(t.symbol)) {
             return { success: false, error: `Símbolo '${t.symbol}' no válido` };
           }
         }
 
+        // Crear la instancia del AFD si todas las validaciones pasan
         const afd = new AFD(
           definition.states,
           definition.alphabet,
@@ -128,11 +136,12 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
 
   const addTransition = useCallback(
     (transition: Transition): { success: boolean; error?: string } => {
-      // Verificar si la transición ya existe
+      // Verificar si ya existe una transición desde el mismo estado con el mismo símbolo
       const existingTransition = transitions.find(
         (t) => t.from === transition.from && t.symbol === transition.symbol
       );
 
+      // Si existe, no permitir duplicados (AFD debe ser determinístico)
       if (existingTransition) {
         return {
           success: false,
@@ -156,6 +165,7 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
 
   const evaluateString = useCallback(
     (input: string): EvaluationResult | null => {
+      // Retornar null si no hay AFD creado
       if (!currentAFD) return null;
       return currentAFD.evaluate(input);
     },
@@ -164,12 +174,14 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
 
   const generateStrings = useCallback(
     (limit: number = 10): string[] => {
+      // Retornar array vacío si no hay AFD creado
       if (!currentAFD) return [];
       return currentAFD.generateStrings(limit);
     },
     [currentAFD]
   );
 
+  // Serializar el AFD actual a formato JSON
   const saveAFD = useCallback((): string => {
     if (!currentAFD) return "";
 
@@ -184,10 +196,11 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
     return JSON.stringify(afdData, null, 2);
   }, [currentAFD]);
 
+  // Cargar un AFD desde datos JSON
   const loadAFD = useCallback(
     (data: AFDDefinition): { success: boolean; error?: string } => {
       try {
-        // Validar estructura del archivo
+        // Validar que el archivo contenga todas las propiedades requeridas
         if (
           !data.states ||
           !data.alphabet ||
@@ -201,6 +214,7 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
           };
         }
 
+        // Reutilizar la función createAFD para validar y crear el AFD
         const result = createAFD(data);
         return result;
       } catch (error) {
@@ -215,6 +229,7 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
     [createAFD]
   );
 
+  // Reiniciar el estado del AFD
   const resetAFD = useCallback(() => {
     setCurrentAFD(null);
     setTransitions([]);
@@ -241,6 +256,7 @@ export const AFDProvider = ({ children }: { children: ReactNode }) => {
 
 export const useAFD = () => {
   const context = useContext(AFDContext);
+  // Verificar que el hook se use dentro del provider
   if (!context) {
     throw new Error("useAuth debe usarse dentro de un AuthProvider");
   }

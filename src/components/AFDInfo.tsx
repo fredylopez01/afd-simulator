@@ -3,9 +3,10 @@
 import { Card } from "./ui/Card";
 import "./AFDInfo.css";
 import { useAFD } from "../hooks/useAFD";
+import { TransitionList } from "./TransitionList";
 
 export function AFDInfo() {
-  const { currentAFD, transitions } = useAFD();
+  const { currentAFD, transitions, removeTransition } = useAFD();
   if (!currentAFD) {
     return (
       <Card variant="error" className="afd-info">
@@ -21,43 +22,46 @@ export function AFDInfo() {
   }
 
   return (
-    <Card title="AFD Actual" variant="info" className="afd-info">
-      <div className="afd-info__content">
-        <div className="afd-info__row">
-          <span className="afd-info__label">Estados:</span>
-          <span className="afd-info__value">
-            {"{" + currentAFD.states.join(", ") + "}"}
-          </span>
-        </div>
+    <div className="afd-info-wrapper">
+      <Card title="AFD Actual" variant="info" className="afd-info">
+        <div className="afd-info__content">
+          <div className="afd-info__row">
+            <span className="afd-info__label">Estados:</span>
+            <span className="afd-info__value">
+              {"{" + currentAFD.states.join(", ") + "}"}
+            </span>
+          </div>
 
-        <div className="afd-info__row">
-          <span className="afd-info__label">Alfabeto:</span>
-          <span className="afd-info__value">
-            {"{" + currentAFD.alphabet.join(", ") + "}"}
-          </span>
-        </div>
+          <div className="afd-info__row">
+            <span className="afd-info__label">Alfabeto:</span>
+            <span className="afd-info__value">
+              {"{" + currentAFD.alphabet.join(", ") + "}"}
+            </span>
+          </div>
 
-        <div className="afd-info__row">
-          <span className="afd-info__label">Estado Inicial:</span>
-          <span className="afd-info__value afd-info__value--highlight">
-            {currentAFD.initialState}
-          </span>
-        </div>
+          <div className="afd-info__row">
+            <span className="afd-info__label">Estado Inicial:</span>
+            <span className="afd-info__value afd-info__value--highlight">
+              {currentAFD.initialState}
+            </span>
+          </div>
 
-        <div className="afd-info__row">
-          <span className="afd-info__label">Estados de Aceptación:</span>
-          <span className="afd-info__value">
-            {"{" + currentAFD.finalStates.join(", ") + "}"}
-          </span>
-        </div>
+          <div className="afd-info__row">
+            <span className="afd-info__label">Estados de Aceptación:</span>
+            <span className="afd-info__value">
+              {"{" + currentAFD.finalStates.join(", ") + "}"}
+            </span>
+          </div>
 
-        <div className="afd-info__row">
-          <span className="afd-info__label">Transiciones:</span>
-          <span className="afd-info__value afd-info__value--count">
-            {transitions.length}
-          </span>
+          <div className="afd-info__row">
+            <span className="afd-info__label">Transiciones:</span>
+            <span className="afd-info__value afd-info__value--count">
+              {transitions.length}
+            </span>
+          </div>
         </div>
-      </div>
-    </Card>
+      </Card>
+      <TransitionList transitions={transitions} onRemove={removeTransition} />
+    </div>
   );
 }
