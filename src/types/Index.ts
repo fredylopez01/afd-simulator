@@ -167,10 +167,11 @@ export class AFD {
     ];
     // Evitar procesar la misma combinación cadena-estado múltiples veces
     const visited = new Set<string>();
-    let maxLength = 0;
+    // Longitud máxima permitida (para evitar ciclos infinitos en autómatas no terminantes)
+    const maxLength = 20;
 
     // Búsqueda en anchura limitada por número de cadenas y longitud máxima
-    while (validStrings.length < limit && queue.length > 0 && maxLength <= 20) {
+    while (validStrings.length < limit && queue.length > 0) {
       const current = queue.shift()!;
       const key = `${current.string}-${current.state}`;
 
@@ -181,10 +182,12 @@ export class AFD {
       // Si estamos en un estado de aceptación, guardar la cadena
       if (this.finalStates.includes(current.state)) {
         validStrings.push(current.string);
+        // Si ya alcanzamos el límite, no hace falta seguir expandiendo
+        if (validStrings.length >= limit) break;
       }
 
-      // Explorar transiciones solo si no excedemos la longitud máxima actual
-      if (current.string.length <= maxLength + 1) {
+      // Explorar transiciones solo si no excedemos la longitud máxima
+      if (current.string.length < maxLength) {
         this.alphabet.forEach((symbol) => {
           const nextState = this.transitionFunction[current.state]?.[symbol];
           if (nextState) {
@@ -195,19 +198,11 @@ export class AFD {
           }
         });
       }
-
-      // Si la cola se vacía y necesitamos más cadenas, incrementar longitud máxima
-      if (queue.length === 0 && validStrings.length < limit) {
-        maxLength++;
-        // Reiniciar la búsqueda desde el estado inicial
-        queue.push({ string: "", state: this.initialState });
-        visited.clear();
-      }
     }
 
     // Ordenar por longitud y luego alfabéticamente
-    return validStrings
-      .slice(0, limit)
-      .sort((a, b) => a.length - b.length || a.localeCompare(b));
+    return validStrings;
+    // .slice(0, limit)
+    // .sort((a, b) => a.length - b.length || a.localeCompare(b));
   }
 }
