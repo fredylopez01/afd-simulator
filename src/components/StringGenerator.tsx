@@ -1,20 +1,14 @@
 // components/StringGenerator.tsx
 
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { GeneratedString } from "../types/Index";
 import "./StringGenerator.css";
+import { useAFD } from "../hooks/useAFD";
 
-interface StringGeneratorProps {
-  onGenerateStrings: (limit?: number) => string[];
-  className?: string;
-}
-
-export const StringGenerator: React.FC<StringGeneratorProps> = ({
-  onGenerateStrings,
-  className = "",
-}) => {
+export function StringGenerator() {
+  const { generateStrings } = useAFD();
   const [generatedStrings, setGeneratedStrings] = useState<GeneratedString[]>(
     []
   );
@@ -26,7 +20,7 @@ export const StringGenerator: React.FC<StringGeneratorProps> = ({
 
     // Simular un pequeño delay para mejor UX
     setTimeout(() => {
-      const strings = onGenerateStrings(limit);
+      const strings = generateStrings(limit);
       const generatedWithIndex: GeneratedString[] = strings.map(
         (value, index) => ({
           value,
@@ -37,7 +31,7 @@ export const StringGenerator: React.FC<StringGeneratorProps> = ({
       setGeneratedStrings(generatedWithIndex);
       setIsGenerating(false);
     }, 500);
-  }, [onGenerateStrings, limit]);
+  }, [generateStrings, limit]);
 
   const handleClear = useCallback(() => {
     setGeneratedStrings([]);
@@ -48,7 +42,7 @@ export const StringGenerator: React.FC<StringGeneratorProps> = ({
   }, []);
 
   return (
-    <div className={`string-generator ${className}`}>
+    <div className="string-generator">
       <Card title="Generación de Cadenas del Lenguaje">
         <div className="string-generator__controls">
           <div className="string-generator__limit-control">
@@ -120,4 +114,4 @@ export const StringGenerator: React.FC<StringGeneratorProps> = ({
       )}
     </div>
   );
-};
+}

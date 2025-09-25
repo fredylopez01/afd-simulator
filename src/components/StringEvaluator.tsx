@@ -1,22 +1,16 @@
 // components/StringEvaluator.tsx
 
-import React, { useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { Input } from "./ui/Input";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { EvaluationResult } from "../types/Index";
 import "./StringEvaluator.css";
 import { EvaluationSteps } from "./EvaluationSteps";
+import { useAFD } from "../hooks/useAFD";
 
-interface StringEvaluatorProps {
-  onEvaluateString: (input: string) => EvaluationResult | null;
-  className?: string;
-}
-
-export const StringEvaluator: React.FC<StringEvaluatorProps> = ({
-  onEvaluateString,
-  className = "",
-}) => {
+export function StringEvaluator() {
+  const { evaluateString } = useAFD();
   const [inputString, setInputString] = useState<string>("");
   const [evaluationResult, setEvaluationResult] =
     useState<EvaluationResult | null>(null);
@@ -32,11 +26,11 @@ export const StringEvaluator: React.FC<StringEvaluatorProps> = ({
 
     // Simular un pequeño delay para mejor UX
     setTimeout(() => {
-      const result = onEvaluateString(inputString);
+      const result = evaluateString(inputString);
       setEvaluationResult(result);
       setIsEvaluating(false);
     }, 300);
-  }, [inputString, onEvaluateString]);
+  }, [inputString, evaluateString]);
 
   const handleClear = useCallback(() => {
     setInputString("");
@@ -44,7 +38,7 @@ export const StringEvaluator: React.FC<StringEvaluatorProps> = ({
   }, []);
 
   return (
-    <div className={`string-evaluator ${className}`}>
+    <div className="string-evaluator">
       <Card title="Evaluación de Cadenas">
         <div className="string-evaluator__form">
           <Input
@@ -79,4 +73,4 @@ export const StringEvaluator: React.FC<StringEvaluatorProps> = ({
       )}
     </div>
   );
-};
+}

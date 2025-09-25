@@ -1,6 +1,12 @@
 // hooks/useAFD.ts
 
-import { useState, useCallback } from "react";
+import {
+  useState,
+  useCallback,
+  ReactNode,
+  createContext,
+  useContext,
+} from "react";
 import {
   AFD,
   Transition,
@@ -29,7 +35,9 @@ interface UseAFDReturn {
   resetAFD: () => void;
 }
 
-export const useAFD = (): UseAFDReturn => {
+const AFDContext = createContext<UseAFDReturn | undefined>(undefined);
+
+export const AFDProvider = ({ children }: { children: ReactNode }) => {
   const [currentAFD, setCurrentAFD] = useState<AFD | null>(null);
   const [transitions, setTransitions] = useState<Transition[]>([]);
   const [isCreated, setIsCreated] = useState<boolean>(false);
@@ -213,7 +221,7 @@ export const useAFD = (): UseAFDReturn => {
     setIsCreated(false);
   }, []);
 
-  return {
+  const value = {
     currentAFD,
     transitions,
     isCreated,
@@ -227,4 +235,14 @@ export const useAFD = (): UseAFDReturn => {
     loadAFD,
     resetAFD,
   };
+
+  return <AFDContext.Provider value={value}>{children}</AFDContext.Provider>;
+};
+
+export const useAFD = () => {
+  const context = useContext(AFDContext);
+  if (!context) {
+    throw new Error("useAuth debe usarse dentro de un AuthProvider");
+  }
+  return context;
 };

@@ -5,20 +5,10 @@ import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
 import { AFDDefinition } from "../types/Index";
 import "./FileManager.css";
+import { useAFD } from "../hooks/useAFD";
 
-interface FileManagerProps {
-  onSaveAFD: () => string;
-  onLoadAFD: (data: AFDDefinition) => { success: boolean; error?: string };
-  hasAFD: boolean;
-  className?: string;
-}
-
-export const FileManager: React.FC<FileManagerProps> = ({
-  onSaveAFD,
-  onLoadAFD,
-  hasAFD,
-  className = "",
-}) => {
+export function FileManager() {
+  const { saveAFD, loadAFD, isCreated } = useAFD();
   const [result, setResult] = useState<{
     message: string;
     type: "success" | "error";
@@ -27,7 +17,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
 
   const handleSave = useCallback(() => {
     try {
-      if (!hasAFD) {
+      if (!isCreated) {
         setResult({
           message: "No hay ningún AFD definido para guardar",
           type: "error",
@@ -35,7 +25,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
         return;
       }
 
-      const afdData = onSaveAFD();
+      const afdData = saveAFD();
       if (!afdData) {
         setResult({
           message: "Error al obtener los datos del AFD",
@@ -59,7 +49,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
     } catch (error) {
       setResult({ message: "Error al guardar el archivo", type: "error" });
     }
-  }, [hasAFD, onSaveAFD]);
+  }, [isCreated, saveAFD]);
 
   const handleLoadClick = useCallback(() => {
     fileInputRef.current?.click();
@@ -84,7 +74,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
           const content = e.target?.result as string;
           const afdData = JSON.parse(content) as AFDDefinition;
 
-          const result = onLoadAFD(afdData);
+          const result = loadAFD(afdData);
 
           if (result.success) {
             setResult({ message: "AFD cargado exitosamente", type: "success" });
@@ -111,7 +101,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
       // Limpiar el input para permitir cargar el mismo archivo otra vez
       event.target.value = "";
     },
-    [onLoadAFD]
+    [loadAFD]
   );
 
   const handleClearResult = useCallback(() => {
@@ -119,7 +109,7 @@ export const FileManager: React.FC<FileManagerProps> = ({
   }, []);
 
   return (
-    <div className={`file-manager ${className}`}>
+    <div className="file-manager">
       <Card title="Gestión de Archivos">
         <div className="file-manager__content">
           <div className="file-manager__description">
@@ -133,14 +123,14 @@ export const FileManager: React.FC<FileManagerProps> = ({
             <div className="file-manager__save">
               <Button
                 onClick={handleSave}
-                disabled={!hasAFD}
+                disabled={!isCreated}
                 size="large"
                 className="file-manager__save-btn"
               >
                 📥 Guardar AFD
               </Button>
               <p className="file-manager__help-text">
-                {hasAFD
+                {isCreated
                   ? "Descargar el AFD actual como archivo JSON"
                   : "Crea un AFD primero para poder guardarlo"}
               </p>
@@ -213,4 +203,4 @@ export const FileManager: React.FC<FileManagerProps> = ({
       </Card>
     </div>
   );
-};
+}

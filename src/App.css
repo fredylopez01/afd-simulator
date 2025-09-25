@@ -8,7 +8,6 @@
 
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
   min-height: 100vh;
   color: #333;
   line-height: 1.6;
@@ -28,7 +27,7 @@ body {
 .app__title {
   font-size: 1.3rem;
   margin-bottom: 5px;
-  background: linear-gradient(45deg, #667eea, #764ba2);
+  background: linear-gradient(45deg, #66ea71, #4ba24b);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -54,23 +53,6 @@ body {
   flex: 1;
   animation: fadeIn 0.3s ease-in-out;
   padding: 20px;
-}
-
-.app__footer {
-  text-align: center;
-  padding: 20px 30px;
-  background: #f8f9fa;
-  border-top: 1px solid #e1e5e9;
-  color: #6c757d;
-  font-size: 14px;
-}
-
-.app__footer p {
-  margin: 0;
-}
-
-.app__footer strong {
-  color: #495057;
 }
 
 @keyframes fadeIn {
