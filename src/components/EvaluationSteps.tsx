@@ -1,6 +1,5 @@
 // components/EvaluationSteps.tsx
 
-import React from "react";
 import { EvaluationResult } from "../types/Index";
 import { Card } from "./ui/Card";
 import "./EvaluationSteps.css";
@@ -11,11 +10,11 @@ interface EvaluationStepsProps {
   className?: string;
 }
 
-export const EvaluationSteps: React.FC<EvaluationStepsProps> = ({
+export function EvaluationSteps({
   result,
   inputString,
   className = "",
-}) => {
+}: EvaluationStepsProps) {
   const displayString = inputString === "" ? "ε (cadena vacía)" : inputString;
 
   return (
@@ -90,4 +89,4 @@ export const EvaluationSteps: React.FC<EvaluationStepsProps> = ({
       </div>
     </Card>
   );
-};
+}

@@ -1,27 +1,14 @@
 // components/AFDCreator.tsx
 
-import React, { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Input } from "./ui/Input";
 import { Select } from "./ui/Select";
 import { Button } from "./ui/Button";
 import { Card } from "./ui/Card";
-import { Transition, AFDDefinition } from "../types/Index";
+import { AFDDefinition } from "../types/Index";
 import "./AFDCreator.css";
 import { TransitionList } from "./TransitionList";
-
-interface AFDCreatorProps {
-  transitions: Transition[];
-  onCreateAFD: (definition: AFDDefinition) => {
-    success: boolean;
-    error?: string;
-  };
-  onAddTransition: (transition: Transition) => {
-    success: boolean;
-    error?: string;
-  };
-  onRemoveTransition: (index: number) => void;
-  onClearTransitions: () => void;
-}
+import { useAFD } from "../hooks/useAFD";
 
 interface FormData {
   states: string;
@@ -36,13 +23,14 @@ interface TransitionForm {
   toState: string;
 }
 
-export const AFDCreator: React.FC<AFDCreatorProps> = ({
-  transitions,
-  onCreateAFD,
-  onAddTransition,
-  onRemoveTransition,
-  onClearTransitions,
-}) => {
+export function AFDCreator() {
+  const {
+    transitions,
+    createAFD,
+    addTransition,
+    removeTransition,
+    clearTransitions,
+  } = useAFD();
   const [formData, setFormData] = useState<FormData>({
     states: "",
     alphabet: "",
@@ -114,7 +102,7 @@ export const AFDCreator: React.FC<AFDCreatorProps> = ({
       return;
     }
 
-    const result = onAddTransition({
+    const result = addTransition({
       from: transitionForm.fromState,
       symbol: transitionForm.symbol,
       to: transitionForm.toState,
@@ -129,7 +117,7 @@ export const AFDCreator: React.FC<AFDCreatorProps> = ({
         type: "error",
       });
     }
-  }, [transitionForm, onAddTransition]);
+  }, [transitionForm, addTransition]);
 
   const handleCreateAFD = useCallback(() => {
     const states = formData.states
@@ -153,7 +141,7 @@ export const AFDCreator: React.FC<AFDCreatorProps> = ({
       transitions,
     };
 
-    const result = onCreateAFD(definition);
+    const result = createAFD(definition);
 
     if (result.success) {
       setResult({ message: "AFD creado exitosamente", type: "success" });
@@ -163,7 +151,7 @@ export const AFDCreator: React.FC<AFDCreatorProps> = ({
         type: "error",
       });
     }
-  }, [formData, transitions, onCreateAFD]);
+  }, [formData, transitions, createAFD]);
 
   return (
     <div className="afd-creator">
@@ -239,7 +227,7 @@ export const AFDCreator: React.FC<AFDCreatorProps> = ({
               {transitions.length > 0 && (
                 <Button
                   variant="secondary"
-                  onClick={onClearTransitions}
+                  onClick={clearTransitions}
                   className="afd-creator__clear-btn"
                 >
                   Limpiar Transiciones
@@ -257,10 +245,10 @@ export const AFDCreator: React.FC<AFDCreatorProps> = ({
 
           <TransitionList
             transitions={transitions}
-            onRemove={onRemoveTransition}
+            onRemove={removeTransition}
           />
         </div>
       </Card>
     </div>
   );
-};
+}

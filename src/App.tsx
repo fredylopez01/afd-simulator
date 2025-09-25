@@ -7,62 +7,28 @@ import { AFDCreator } from "./components/AFDCreator";
 import { StringEvaluator } from "./components/StringEvaluator";
 import { StringGenerator } from "./components/StringGenerator";
 import { FileManager } from "./components/FileManager";
-import { useAFD } from "./hooks/useAFD";
 import { TabType } from "./types/Index";
 import "./App.css";
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("create");
-  const {
-    currentAFD,
-    transitions,
-    isCreated,
-    createAFD,
-    addTransition,
-    removeTransition,
-    clearTransitions,
-    evaluateString,
-    generateStrings,
-    saveAFD,
-    loadAFD,
-  } = useAFD();
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "create":
-        return (
-          <AFDCreator
-            transitions={transitions}
-            onCreateAFD={createAFD}
-            onAddTransition={addTransition}
-            onRemoveTransition={removeTransition}
-            onClearTransitions={clearTransitions}
-          />
-        );
+        return <AFDCreator />;
 
       case "evaluate":
-        return <StringEvaluator onEvaluateString={evaluateString} />;
+        return <StringEvaluator />;
 
       case "generate":
-        return (
-          <>
-            <StringGenerator onGenerateStrings={generateStrings} />
-          </>
-        );
+        return <StringGenerator />;
 
       case "files":
-        return (
-          <FileManager
-            onSaveAFD={saveAFD}
-            onLoadAFD={loadAFD}
-            hasAFD={isCreated}
-          />
-        );
+        return <FileManager />;
 
       case "afd":
-        return (
-          <AFDInfo afd={currentAFD} transitionsCount={transitions.length} />
-        );
+        return <AFDInfo />;
 
       default:
         return null;
