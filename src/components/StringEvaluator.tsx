@@ -10,13 +10,22 @@ import { EvaluationSteps } from "./EvaluationSteps";
 import { useAFD } from "../hooks/useAFD";
 
 export function StringEvaluator() {
+  // Hook personalizado para acceder a las funciones del AFD
   const { evaluateString } = useAFD();
+
+  // Estado para la cadena de entrada
   const [inputString, setInputString] = useState<string>("");
+
+  // Estado para almacenar el resultado de la evaluación
   const [evaluationResult, setEvaluationResult] =
     useState<EvaluationResult | null>(null);
+
+  // Estado para manejar el indicador de carga durante la evaluación
   const [isEvaluating, setIsEvaluating] = useState<boolean>(false);
 
+  // Función para evaluar la cadena ingresada
   const handleEvaluate = useCallback(async () => {
+    // Validar que la cadena no esté vacía
     if (!inputString.trim()) {
       setEvaluationResult(null);
       return;
@@ -32,6 +41,7 @@ export function StringEvaluator() {
     }, 300);
   }, [inputString, evaluateString]);
 
+  // Función para limpiar el formulario y resultados
   const handleClear = useCallback(() => {
     setInputString("");
     setEvaluationResult(null);
@@ -41,6 +51,7 @@ export function StringEvaluator() {
     <div className="string-evaluator">
       <Card title="Evaluación de Cadenas">
         <div className="string-evaluator__form">
+          {/* Campo de entrada para la cadena a evaluar */}
           <Input
             label="Cadena a evaluar"
             value={inputString}
@@ -48,6 +59,7 @@ export function StringEvaluator() {
             placeholder="Ingrese la cadena (ej: 101)"
           />
 
+          {/* Botones de acción */}
           <div className="string-evaluator__actions">
             <Button
               onClick={handleEvaluate}
@@ -68,6 +80,7 @@ export function StringEvaluator() {
         </div>
       </Card>
 
+      {/* Mostrar los pasos de evaluación si hay resultado */}
       {evaluationResult && (
         <EvaluationSteps result={evaluationResult} inputString={inputString} />
       )}

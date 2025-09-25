@@ -4,6 +4,7 @@ import { EvaluationResult } from "../types/Index";
 import { Card } from "./ui/Card";
 import "./EvaluationSteps.css";
 
+// Propiedades del componente para mostrar los pasos de evaluación
 interface EvaluationStepsProps {
   result: EvaluationResult;
   inputString: string;
@@ -15,6 +16,7 @@ export function EvaluationSteps({
   inputString,
   className = "",
 }: EvaluationStepsProps) {
+  // Formatear la cadena para mostrar, incluyendo el símbolo épsilon para cadena vacía
   const displayString = inputString === "" ? "ε (cadena vacía)" : inputString;
 
   return (
@@ -24,6 +26,7 @@ export function EvaluationSteps({
       className={`evaluation-steps ${className}`}
     >
       <div className="evaluation-steps__content">
+        {/* Lista de pasos de evaluación */}
         <div className="evaluation-steps__list">
           {result.steps.map((step, index) => (
             <div
@@ -32,9 +35,13 @@ export function EvaluationSteps({
                 step.step === 0 ? "evaluation-step--initial" : ""
               }`}
             >
+              {/* Número del paso */}
               <div className="evaluation-step__number">{step.step}</div>
               <div className="evaluation-step__content">
+                {/* Mensaje descriptivo del paso */}
                 <p className="evaluation-step__message">{step.message}</p>
+
+                {/* Detalles de la transición si existe símbolo */}
                 {step.symbol && (
                   <div className="evaluation-step__transition">
                     <span className="evaluation-step__current-state">
@@ -55,6 +62,7 @@ export function EvaluationSteps({
           ))}
         </div>
 
+        {/* Resultado final de la evaluación */}
         <div
           className={`evaluation-result ${
             result.accepted
@@ -62,6 +70,7 @@ export function EvaluationSteps({
               : "evaluation-result--rejected"
           }`}
         >
+          {/* Ícono visual del resultado */}
           <div className="evaluation-result__icon">
             {result.accepted ? "✅" : "❌"}
           </div>
@@ -70,6 +79,7 @@ export function EvaluationSteps({
               Resultado: La cadena "{displayString}" es{" "}
               {result.accepted ? "ACEPTADA" : "RECHAZADA"}
             </strong>
+            {/* Mostrar estado final si está disponible */}
             {result.finalState && (
               <p className="evaluation-result__final-state">
                 Estado final: <strong>{result.finalState}</strong>
@@ -78,6 +88,7 @@ export function EvaluationSteps({
           </div>
         </div>
 
+        {/* Mostrar errores si ocurrieron durante la evaluación */}
         {result.error && (
           <div className="evaluation-error">
             <div className="evaluation-error__icon">⚠️</div>

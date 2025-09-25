@@ -10,6 +10,7 @@ import "./AFDCreator.css";
 import { TransitionList } from "./TransitionList";
 import { useAFD } from "../hooks/useAFD";
 
+// Interfaz para los datos del formulario principal
 interface FormData {
   states: string;
   alphabet: string;
@@ -17,6 +18,7 @@ interface FormData {
   finalStates: string;
 }
 
+// Interfaz para el formulario de transiciones
 interface TransitionForm {
   fromState: string;
   symbol: string;
@@ -24,6 +26,7 @@ interface TransitionForm {
 }
 
 export function AFDCreator() {
+  // Hook personalizado para manejar la lógica del AFD
   const {
     transitions,
     createAFD,
@@ -31,6 +34,8 @@ export function AFDCreator() {
     removeTransition,
     clearTransitions,
   } = useAFD();
+
+  // Estado para los datos del formulario principal
   const [formData, setFormData] = useState<FormData>({
     states: "",
     alphabet: "",
@@ -38,16 +43,20 @@ export function AFDCreator() {
     finalStates: "",
   });
 
+  // Estado para el formulario de transiciones
   const [transitionForm, setTransitionForm] = useState<TransitionForm>({
     fromState: "",
     symbol: "",
     toState: "",
   });
 
+  // Estado para mostrar mensajes de resultado
   const [result, setResult] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
+
+  // Opciones disponibles para los selectores
   const [stateOptions, setStateOptions] = useState<
     Array<{ value: string; label: string }>
   >([]);
@@ -55,7 +64,7 @@ export function AFDCreator() {
     Array<{ value: string; label: string }>
   >([]);
 
-  // Actualizar opciones cuando cambien los estados o el alfabeto
+  // Actualizar opciones de estados cuando cambie el campo de estados
   useEffect(() => {
     const states = formData.states
       .split(",")
@@ -64,6 +73,7 @@ export function AFDCreator() {
     setStateOptions(states.map((state) => ({ value: state, label: state })));
   }, [formData.states]);
 
+  // Actualizar opciones de símbolos cuando cambie el alfabeto
   useEffect(() => {
     const symbols = formData.alphabet
       .split(",")
@@ -74,14 +84,16 @@ export function AFDCreator() {
     );
   }, [formData.alphabet]);
 
+  // Manejar cambios en los campos del formulario principal
   const handleInputChange = useCallback(
     (field: keyof FormData, value: string) => {
       setFormData((prev) => ({ ...prev, [field]: value }));
-      setResult(null);
+      setResult(null); // Limpiar mensajes de resultado
     },
     []
   );
 
+  // Manejar cambios en el formulario de transiciones
   const handleTransitionFormChange = useCallback(
     (field: keyof TransitionForm, value: string) => {
       setTransitionForm((prev) => ({ ...prev, [field]: value }));
@@ -89,7 +101,9 @@ export function AFDCreator() {
     []
   );
 
+  // Agregar una nueva transición
   const handleAddTransition = useCallback(() => {
+    // Validar que todos los campos estén llenos
     if (
       !transitionForm.fromState ||
       !transitionForm.symbol ||
@@ -102,6 +116,7 @@ export function AFDCreator() {
       return;
     }
 
+    // Intentar agregar la transición
     const result = addTransition({
       from: transitionForm.fromState,
       symbol: transitionForm.symbol,
@@ -109,6 +124,7 @@ export function AFDCreator() {
     });
 
     if (result.success) {
+      // Limpiar formulario de transición si se agregó exitosamente
       setTransitionForm({ fromState: "", symbol: "", toState: "" });
       setResult(null);
     } else {
@@ -119,7 +135,9 @@ export function AFDCreator() {
     }
   }, [transitionForm, addTransition]);
 
+  // Crear el AFD con todos los datos ingresados
   const handleCreateAFD = useCallback(() => {
+    // Procesar los datos del formulario
     const states = formData.states
       .split(",")
       .map((s) => s.trim())
@@ -133,6 +151,7 @@ export function AFDCreator() {
       .map((s) => s.trim())
       .filter((s) => s);
 
+    // Crear la definición del AFD
     const definition: AFDDefinition = {
       states,
       alphabet,
@@ -141,6 +160,7 @@ export function AFDCreator() {
       transitions,
     };
 
+    // Intentar crear el AFD
     const result = createAFD(definition);
 
     if (result.success) {
@@ -157,6 +177,7 @@ export function AFDCreator() {
     <div className="afd-creator">
       <Card title="Definir Autómata Finito Determinista">
         <div className="afd-creator__form">
+          {/* Formulario principal para definir los componentes básicos del AFD */}
           <div>
             <Input
               label="Estados (separados por comas)"
@@ -188,11 +209,13 @@ export function AFDCreator() {
             />
           </div>
 
+          {/* Sección para definir las transiciones */}
           <div className="afd-creator__transition-section">
             <h4 className="afd-creator__section-title">
               Función de Transición
             </h4>
 
+            {/* Formulario para agregar transiciones individuales */}
             <div className="afd-creator__transition-form">
               <Select
                 value={transitionForm.fromState}
@@ -223,6 +246,8 @@ export function AFDCreator() {
 
               <Button onClick={handleAddTransition}>Agregar</Button>
             </div>
+
+            {/* Acciones principales */}
             <div className="afd-creator__actions">
               {transitions.length > 0 && (
                 <Button
@@ -236,6 +261,7 @@ export function AFDCreator() {
               <Button onClick={handleCreateAFD}>Crear AFD</Button>
             </div>
 
+            {/* Mostrar mensajes de resultado */}
             {result && (
               <Card variant={result.type} className="afd-creator__result">
                 {result.message}
@@ -243,6 +269,7 @@ export function AFDCreator() {
             )}
           </div>
 
+          {/* Lista de transiciones añadidas */}
           <TransitionList
             transitions={transitions}
             onRemove={removeTransition}
