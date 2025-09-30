@@ -9,6 +9,7 @@ import { StringGenerator } from "./components/StringGenerator";
 import { FileManager } from "./components/FileManager";
 import { TabType } from "./types/Index";
 import "./App.css";
+import { AFDVisualizer } from "./components/visualizer/AFDVisualizer";
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>("create");
@@ -29,6 +30,9 @@ const App: React.FC = () => {
 
       case "afd":
         return <AFDInfo />;
+
+      case "visualize":
+        return <AFDVisualizer />;
 
       default:
         return null;

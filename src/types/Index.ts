@@ -39,7 +39,13 @@ export interface AFDState {
   isCreated: boolean;
 }
 
-export type TabType = "create" | "evaluate" | "generate" | "files" | "afd";
+export type TabType =
+  | "create"
+  | "evaluate"
+  | "generate"
+  | "files"
+  | "afd"
+  | "visualize";
 
 export interface GeneratedString {
   value: string;
