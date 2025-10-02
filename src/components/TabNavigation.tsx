@@ -22,7 +22,7 @@ const tabs: Tab[] = [
   { id: "generate", label: "Generar Cadenas", icon: "✨" },
   { id: "files", label: "Archivos", icon: "📁" },
   { id: "afd", label: "AFD Info", icon: "ℹ️" },
-  // { id: "visualize", label: "Visualizar", icon: "👁️" },
+  { id: "visualize", label: "Visualizar", icon: "👁️" },
 ];
 
 export const TabNavigation: React.FC<TabNavigationProps> = ({

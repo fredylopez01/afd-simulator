@@ -11,7 +11,7 @@ import { useAFD } from "../hooks/useAFD";
 
 export function StringEvaluator() {
   // Hook personalizado para acceder a las funciones del AFD
-  const { evaluateString } = useAFD();
+  const { evaluateString, currentAFD } = useAFD();
 
   // Estado para la cadena de entrada
   const [inputString, setInputString] = useState<string>("");
@@ -25,20 +25,35 @@ export function StringEvaluator() {
 
   // Función para evaluar la cadena ingresada
   const handleEvaluate = useCallback(async () => {
-    // Validar que la cadena no esté vacía
-    if (!inputString.trim()) {
-      setEvaluationResult(null);
-      return;
+    let isValid = true;
+    let symbols = new Array<string>();
+    for (let i = 0; i < inputString.length; i++) {
+      const symbol = inputString[i];
+      if (!currentAFD?.alphabet.includes(symbol)) {
+        symbols.push(symbol);
+        isValid = false;
+      }
     }
+    if (isValid) {
+      setIsEvaluating(true);
 
-    setIsEvaluating(true);
-
-    // Simular un pequeño delay para mejor UX
-    setTimeout(() => {
-      const result = evaluateString(inputString);
-      setEvaluationResult(result);
-      setIsEvaluating(false);
-    }, 300);
+      // Simular un pequeño delay para mejor UX
+      setTimeout(() => {
+        const result = evaluateString(inputString);
+        setEvaluationResult(result);
+        setIsEvaluating(false);
+      }, 300);
+    } else {
+      let symbolList = "";
+      for (let symbol = 0; symbol < symbols.length; symbol++) {
+        symbolList += '"' + symbols[symbol] + '", ';
+      }
+      setEvaluationResult({
+        accepted: false,
+        steps: [],
+        error: `Estos simbolos no pertenecen no pertenece al alfabeto: ${symbolList}`,
+      });
+    }
   }, [inputString, evaluateString]);
 
   // Función para limpiar el formulario y resultados
@@ -63,7 +78,7 @@ export function StringEvaluator() {
           <div className="string-evaluator__actions">
             <Button
               onClick={handleEvaluate}
-              disabled={!inputString.trim() || isEvaluating}
+              disabled={isEvaluating}
               size="large"
             >
               {isEvaluating ? "Evaluando..." : "Evaluar Cadena"}

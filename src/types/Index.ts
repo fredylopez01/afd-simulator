@@ -109,15 +109,6 @@ export class AFD {
     for (let i = 0; i < string.length; i++) {
       const symbol = string[i];
 
-      // Verificar que el símbolo pertenezca al alfabeto
-      if (!this.alphabet.includes(symbol)) {
-        return {
-          accepted: false,
-          steps,
-          error: `El símbolo '${symbol}' no pertenece al alfabeto`,
-        };
-      }
-
       // Buscar la transición correspondiente
       const nextState = this.transitionFunction[currentState]?.[symbol];
 
